@@ -54,12 +54,13 @@ TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/u8500-common/shbootimg.mk
+TARGET_KERNEL_SOURCE := kernel/samsung/u8500
+TARGET_KERNEL_CUSTOM_TOOLCHAIN := linaro-4.8
 
 # Graphics
 USE_OPENGL_RENDERER := true
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
-COMMON_GLOBAL_CFLAGS += -DFORCE_SCREENSHOT_CPU_PATH
 BOARD_EGL_CFG := device/samsung/u8500-common/configs/egl.cfg
 
 # Wifi
@@ -79,6 +80,7 @@ WIFI_DRIVER_MODULE_ARG           := "firmware_path=/system/etc/wifi/bcmdhd_sta.b
 WIFI_DRIVER_MODULE_AP_ARG        := "firmware_path=/system/etc/wifi/bcmdhd_apsta.bin nvram_path=/system/etc/wifi/nvram_net.txt"
 BOARD_LEGACY_NL80211_STA_EVENTS  := true
 BOARD_NO_APSME_ATTR              := true
+ANDROID_P2P                      := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -92,6 +94,10 @@ BOARD_RIL_CLASS := ../../../device/samsung/u8500-common/ril/
 BOARD_USES_ALSA_AUDIO := true
 BOARD_HAVE_PRE_KITKAT_AUDIO_BLOB := true
 COMMON_GLOBAL_CFLAGS += -DMR0_AUDIO_BLOB -DMR1_AUDIO_BLOB
+
+
+# Override healthd HAL
+BOARD_HAL_STATIC_LIBRARIES := libhealthd.montblanc
 
 # Enable WEBGL in WebKit
 ENABLE_WEBGL := true
@@ -114,9 +120,7 @@ BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_SUPPRESS_EMMC_WIPE := true
 BOARD_RECOVERY_SWIPE := true
-
-# External apps on SD
-TARGET_EXTERNAL_APPS = sdcard1
+RECOVERY_FSTAB_VERSION := 2
 
 # SELinux
 BOARD_SEPOLICY_DIRS += \

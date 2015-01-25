@@ -31,6 +31,9 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/rootdir/init.u8500.usb.rc:root/init.u8500.usb.rc
 
 # Graphics
+PRODUCT_PACKAGES += \
+    libblt_hw
+
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.opengles.version=131072 \
     ro.zygote.disable_gl_preload=1 \
@@ -43,6 +46,9 @@ PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/configs/omxloaders:system/etc/omxloaders \
     $(COMMON_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
     $(COMMON_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
+
+PRODUCT_PACKAGES += \
+    libomxil-bellagio
 
 # Wifi
 PRODUCT_COPY_FILES += \
@@ -75,14 +81,17 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
     $(COMMON_PATH)/configs/asound.conf:system/etc/asound.conf
+
 PRODUCT_PACKAGES += \
-    audio.usb.default \
     audio.a2dp.default \
+    audio.usb.default \
+    libasound \
     libaudioutils \
     libtinyalsa
 
-# U8500 Hardware
-$(call inherit-product, hardware/u8500/u8500.mk)
+# Sensors
+PRODUCT_PACKAGES += \
+    lights.montblanc
 
 # USB
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -102,10 +111,15 @@ PRODUCT_PACKAGES += \
     SamsungServiceMode \
     Torch
 
+# Memory Tracker HAL
+PRODUCT_PACKAGES += \
+    memtrack.montblanc
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     make_ext4fs \
-    setup_fs
+    setup_fs \
+    e2fsck
 
 # F2FS
 PRODUCT_PACKAGES += \
@@ -143,12 +157,20 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/android.software.sip.xml:system/etc/permissions/android.software.sip.xml \
-    frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
-    packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
+    frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml
 
-# Live Wallpapers
+# Optional CM packages
 PRODUCT_PACKAGES += \
-    librs_jni
+    Galaxy4 \
+    HoloSpiralWallpaper \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    MagicSmokeWallpapers \
+    NoiseField \
+    PhaseBeam \
+    VisualizationWallpapers \
+    PhotoTable \
+    SoundRecorder
 
 # Disable error Checking
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -173,10 +195,3 @@ PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.heapminfree=512k \
     dalvik.vm.heapmaxfree=4m
 PRODUCT_TAGS += dalvik.gc.type-precise
-
-# KSM
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.ksm.default=1
-
-# Use the non-open-source parts, if they're present
-include vendor/samsung/u8500-common/vendor-common.mk
