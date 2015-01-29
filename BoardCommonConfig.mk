@@ -28,7 +28,6 @@ BOARD_NAND_PAGE_SIZE := 4096
 BOARD_NAND_SPARE_SIZE := 128
 BOARD_FLASH_BLOCK_SIZE := 4096
 TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 641728512
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 2147483648
@@ -53,6 +52,7 @@ TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 # Kernel
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_BASE := 0x40000000
+BOARD_KERNEL_CMDLINE := "selinux=0"
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/u8500-common/shbootimg.mk
 TARGET_KERNEL_SOURCE := kernel/samsung/u8500
 TARGET_KERNEL_CUSTOM_TOOLCHAIN := linaro-4.8
@@ -62,6 +62,9 @@ USE_OPENGL_RENDERER := true
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
 BOARD_EGL_CFG := device/samsung/u8500-common/configs/egl.cfg
+
+#Camera
+COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS -DADD_LEGACY_ACQUIRE_BUFFER_SYMBOL
 
 # Wifi
 BOARD_WLAN_DEVICE                := bcmdhd
@@ -81,6 +84,7 @@ WIFI_DRIVER_MODULE_AP_ARG        := "firmware_path=/system/etc/wifi/bcmdhd_apsta
 BOARD_LEGACY_NL80211_STA_EVENTS  := true
 BOARD_NO_APSME_ATTR              := true
 ANDROID_P2P                      := true
+BOARD_NO_WIFI_HAL := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -89,12 +93,15 @@ BOARD_BLUEDROID_VENDOR_CONF := device/samsung/u8500-common/bluetooth/vnd_u8500.t
 
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/u8500-common/ril/
+BOARD_NEEDS_SEC_RIL_WORKAROUND := true
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
 BOARD_HAVE_PRE_KITKAT_AUDIO_BLOB := true
+BOARD_HAVE_PRE_KITKAT_AUDIO_POLICY_BLOB := true
 COMMON_GLOBAL_CFLAGS += -DMR0_AUDIO_BLOB -DMR1_AUDIO_BLOB
-
+USE_LEGACY_AUDIO_POLICY := 1
+BOARD_USES_LEGACY_MMAP := true
 
 # Override healthd HAL
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.montblanc
@@ -111,32 +118,21 @@ TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/musb-ux500.0/musb-hdrc
 # Charging mode
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/devices/virtual/power_supply/battery/lpm_mode
 
+# SELinux
+HAVE_SELINUX := true
+BOARD_SEPOLICY_DIRS += device/samsung/janice/selinux
+BOARD_SEPOLICY_UNION += file_contexts 
+
 # Recovery
-BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/u8500-common/recovery/graphics.c
+#BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/u8500-common/recovery/graphics.c
 BOARD_UMS_LUNFILE := "/sys/devices/platform/musb-ux500.0/musb-hdrc/gadget/lun0/file"
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/u8500-common/recovery/recovery_keys.c
 BOARD_USES_MMCUTILS := true
 BOARD_HAS_NO_MISC_PARTITION := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_SUPPRESS_EMMC_WIPE := true
-BOARD_RECOVERY_SWIPE := true
 RECOVERY_FSTAB_VERSION := 2
 
-# SELinux
-BOARD_SEPOLICY_DIRS += \
-    device/samsung/u8500-common/selinux
-
-BOARD_SEPOLICY_UNION += \
-    device.te \
-    file.te \
-    rild.te \
-    drmserver.te \
-    ueventd.te \
-    domain.te \
-    system.te \
-    file_contexts \
-    wpa_supplicant.te \
-    vold.te
 
 # Delete the line below when SELinux is enabled on all devices
 COMMON_GLOBAL_CFLAGS += -DRECOVERY_CANT_USE_CONFIG_EXT4_FS_XATTR
@@ -145,4 +141,3 @@ COMMON_GLOBAL_CFLAGS += -DRECOVERY_CANT_USE_CONFIG_EXT4_FS_XATTR
 TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/u8500-common
 
 # Misc
-COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS

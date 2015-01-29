@@ -27,6 +27,8 @@ on init
     export LD_LIBRARY_PATH /vendor/lib:/system/lib:/system/lib/ste_omxcomponents
     export OMX_STE_ENS_COMPONENTS_DIR /system/lib/ste_omxcomponents/
     export OMX_BELLAGIO_LOADER_REGISTRY /system/etc/omxloaders
+    export BOOTCLASSPATH /system/framework/core-libart.jar:/system/framework/conscrypt.jar:/system/framework/okhttp.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/ims-common.jar:/system/framework/mms-common.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar:/system/framework/apache-xml.jar:/system/framework/webviewchromium.jar
+    export SYSTEMSERVERCLASSPATH /system/framework/services.jar:/system/framework/ethernet-service.jar:/system/framework/wifi-service.jar
     export OMX_STE_CSCALL_COMPONENTS_DIR /system/lib/ste_omxcomponents/
 
     # Vibetonz
@@ -341,6 +343,13 @@ on boot
     class_start modem
     class_start default
 
+service ril-daemon /system/bin/rild
+    class main
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio system sdcard_rw log sdcard_r
+
 # Crash Safe Parameter Storage Area, serving production parameter requests from clients.
 # Configuration is read from file "/etc/cspsa.conf" and each found area spawns a CSPSA server
 # process.
@@ -370,6 +379,8 @@ service admsrv /system/bin/admsrv
     group system audio inet net_bt net_bt_admin net_raw shell log
     ioprio rt 4
     capability NET_ADMIN NET_RAW SYS_NICE
+
+    seclabel u:r:admsrv:s0
 
 service geomagneticd /system/bin/geomagneticd6x
     user compass

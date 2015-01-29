@@ -34,18 +34,23 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     libblt_hw
 
+
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.opengles.version=131072 \
-    ro.zygote.disable_gl_preload=1 \
-    ro.bq.gpu_to_cpu_unsupported=1 \
-    debug.sf.hw=1 \
-    debug.hwui.render_dirty_regions=false
+    debug.hwui.render_dirty_regions=false \
+    persist.sys.use_dithering=2 \
+    persist.sys.strictmode.disable=1
 
 # Media
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/configs/omxloaders:system/etc/omxloaders \
     $(COMMON_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
-    $(COMMON_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml
+    $(COMMON_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
+frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
+    frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml 
+PRODUCT_PROPERTY_OVERRIDES += \
+    media.stagefright.use-awesome=1
 
 PRODUCT_PACKAGES += \
     libomxil-bellagio
@@ -53,8 +58,14 @@ PRODUCT_PACKAGES += \
 # Wifi
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf
+
 PRODUCT_PACKAGES += \
+    libwpa_client \
+    hostapd \
+    dhcpcd.conf \
+    wpa_supplicant \
     libnetcmdiface
+
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
     wifi.supplicant_scan_interval=150
@@ -124,8 +135,8 @@ PRODUCT_PACKAGES += \
 # F2FS
 PRODUCT_PACKAGES += \
     mkfs.f2fs \
-    fsck.f2fs \
-    fibmap.f2fs
+   fsck.f2fs \
+   fibmap.f2fs
 
 # Keylayout
 PRODUCT_COPY_FILES += \
@@ -177,9 +188,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.checkjni=0 \
     dalvik.vm.checkjni=false
 
-# SELinux
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.boot.selinux=permissive
 
 # Storage switch
  PRODUCT_PROPERTY_OVERRIDES += \
